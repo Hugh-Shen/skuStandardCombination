@@ -28,7 +28,7 @@ export default defineComponent({
           historyMap[item.id] = item
 
           item.specsItemList.forEach(child => {
-            map[item.id][child.code] = child.value
+            map[item.id][child.code] = { value: child.value, onece: true }
           })
         })
 
@@ -43,11 +43,12 @@ export default defineComponent({
             // 循环 key 值列表，知道可以完全匹配项
             for (let i = 0; i < data.length; i++) {
               const dataItem = data[i]
+              let c = null
               
               for (let index = 0; index < kList.length; index++) {
-                const c = kList[index]
+                c = kList[index]
                 
-                if (element[c] !== dataItem[c]) {
+                if (element[c].value !== dataItem[c]) {
                   result = false
 
                   break;
@@ -56,7 +57,10 @@ export default defineComponent({
 
               // key 值列表循环完成结果为真代表匹配
               if (result) {
-                data[i] = { ...historyMap[key], ...data[i] }
+                if (element[c].onece) {
+                  element[c].onece = false
+                  data[i] = { ...historyMap[key], ...data[i] }
+                }
               }
 
               result = true
